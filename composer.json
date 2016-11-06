@@ -19,7 +19,7 @@
             "email": "m.vanderschee@leaseweb.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=5.3.2",
         "doctrine/dbal": ">=2.1.0"
