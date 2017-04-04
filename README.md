@@ -75,7 +75,7 @@ final class DriverManager
 {
     private static $_driverMap = array(
 		/* ... snip ... */
-        'pdo_dblib' => 'Doctrine\DBAL\Driver\PDODblib\Driver',
+        'pdo_dblib'          => 'Lsw\DoctrinePdoDblib\Doctrine\DBAL\Driver\PDODblib\Driver',
     );
 }
 ```
