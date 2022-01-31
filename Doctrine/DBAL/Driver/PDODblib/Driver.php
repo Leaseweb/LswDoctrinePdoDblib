@@ -26,7 +26,7 @@ namespace Lsw\DoctrinePdoDblib\Doctrine\DBAL\Driver\PDODblib;
  *
  * @since 2.0
  */
-class Driver implements \Doctrine\DBAL\Driver {
+class Driver implements \Doctrine\DBAL\Driver, \Doctrine\DBAL\VersionAwarePlatformDriver{
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array()) {
         return new Connection(
             $this->_constructPdoDsn($params),
@@ -102,4 +102,37 @@ class Driver implements \Doctrine\DBAL\Driver {
         $params = $conn->getParams();
         return $params['dbname'];
     }
+
+    public function createDatabasePlatformForVersion($version)
+    {
+        if ( ! preg_match(
+            '/^(?P<major>\d+)(?:\.(?P<minor>\d+)(?:\.(?P<patch>\d+)(?:\.(?P<build>\d+))?)?)?/',
+            $version,
+            $versionParts
+        )) {
+            throw DBALException::invalidPlatformVersionSpecified(
+                $version,
+                '<major_version>.<minor_version>.<patch_version>.<build_version>'
+            );
+        }
+
+        $majorVersion = $versionParts['major'];
+        $minorVersion = isset($versionParts['minor']) ? $versionParts['minor'] : 0;
+        $patchVersion = isset($versionParts['patch']) ? $versionParts['patch'] : 0;
+        $buildVersion = isset($versionParts['build']) ? $versionParts['build'] : 0;
+        $version      = $majorVersion . '.' . $minorVersion . '.' . $patchVersion . '.' . $buildVersion;
+
+        switch(true) {
+            case version_compare($version, '11.00.2100', '>='):
+                return new \Doctrine\DBAL\Platforms\SQLServer2012Platform();
+            case version_compare($version, '10.00.1600', '>='):
+                return new \Lsw\DoctrinePdoDblib\Doctrine\Platforms\SQLServer2008Platform();
+            case version_compare($version, '9.00.1399', '>='):
+                return new \Doctrine\DBAL\Platforms\SQLServer2005Platform();
+            default:
+                return new \Lsw\DoctrinePdoDblib\Doctrine\Platforms\MsSqlPlatform();
+        }
+    }
+
+
 }
