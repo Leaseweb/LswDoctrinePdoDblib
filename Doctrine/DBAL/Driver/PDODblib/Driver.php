@@ -61,6 +61,14 @@ class Driver implements \Doctrine\DBAL\Driver {
             $dsn .= ';charset=' . $params['charset'];
         }
 
+        if (isset($params['version'])) {
+            $dsn .= ';version=' . $params['version'];
+        }
+
+        if (isset($params['appname'])) {
+            $dsn .= ';appname=' . $params['appname'];
+        }
+
         return $dsn;
     }
 
