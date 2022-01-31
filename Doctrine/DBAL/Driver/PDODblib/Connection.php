@@ -30,6 +30,13 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrin
 
     protected $_pdoTransactionsSupport = null;
     protected $_pdoLastInsertIdSupport = null;
+        
+    public function __construct($dsn, $user = null, $password = null, $options = null)
+    {
+        parent::__construct($dsn, $user, $password, $options);
+        $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array(__NAMESPACE__ . '\PDOStatement', array()));
+    }
+    
     /**
      * @override
      */
